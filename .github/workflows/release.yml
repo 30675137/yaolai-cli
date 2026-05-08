@@ -24,7 +24,9 @@ jobs:
       - run: bun install --frozen-lockfile
       - name: Generate skills-content.ts (must precede tests + build)
         run: bun scripts/gen-skills.ts
-      - run: bun test
+      - name: Run tests (skip on Windows — POSIX chmod 0600 not honored by Win fs)
+        if: matrix.os != 'windows-latest'
+        run: bun test
       - name: Build binary
         run: bun build src/cli.ts --compile --minify --target=${{ matrix.target }} --outfile dist/${{ matrix.asset }}
       - name: Upload to release
