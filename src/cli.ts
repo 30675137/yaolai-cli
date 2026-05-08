@@ -19,6 +19,15 @@ const credentialsPath = join(homedir(), ".yaolai/credentials.json");
 const configPath = join(homedir(), ".yaolai/config.json");
 const skillsDir = join(homedir(), ".claude/skills");
 
+const program = new Command();
+program
+  .name("yaolai")
+  .description("耀莱商城运营 CLI")
+  .version("0.1.0")
+  .option("--json", "输出 JSON（错误也走 JSON 信封）")
+  .option("--verbose", "展开 trace_id / 请求 id")
+  .option("--endpoint <url>", "临时覆盖 endpoint");
+
 function resolveEndpoint(globalOpts: { endpoint?: string }): string {
   if (globalOpts.endpoint) return globalOpts.endpoint;
   return loadConfig(configPath).endpoint;
@@ -43,15 +52,6 @@ function requireToken(): { endpoint: string; token: string } {
   const override = program.opts().endpoint;
   return { endpoint: override ?? c.endpoint, token: c.token };
 }
-
-const program = new Command();
-program
-  .name("yaolai")
-  .description("耀莱商城运营 CLI")
-  .version("0.1.0")
-  .option("--json", "输出 JSON（错误也走 JSON 信封）")
-  .option("--verbose", "展开 trace_id / 请求 id")
-  .option("--endpoint <url>", "临时覆盖 endpoint");
 
 registerVersion(program);
 registerConfig(program, configPath);

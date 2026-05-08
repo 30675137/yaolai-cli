@@ -22,14 +22,19 @@ export function saveConfig(path: string, c: Config): void {
   writeFileSync(path, JSON.stringify(c, null, 2));
 }
 
+function assertKey(key: string): asserts key is Key {
+  if (!ALLOWED_KEYS.includes(key as Key)) {
+    throw new CliError("CONFIG_UNKNOWN_KEY", `unknown key: ${key}`, EXIT_CODES.INVALID_ARG);
+  }
+}
+
 export function getKey(path: string, key: Key): string {
+  assertKey(key);
   return loadConfig(path)[key];
 }
 
 export function setKey(path: string, key: Key, value: string): void {
-  if (!ALLOWED_KEYS.includes(key as Key)) {
-    throw new CliError("CONFIG_UNKNOWN_KEY", `unknown key: ${key}`, EXIT_CODES.INVALID_ARG);
-  }
+  assertKey(key);
   if (key === "profile" && value !== "default") {
     throw new CliError(
       "CONFIG_PROFILE_LOCKED",
