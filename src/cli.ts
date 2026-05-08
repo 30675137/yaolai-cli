@@ -40,7 +40,8 @@ function requireToken(): { endpoint: string; token: string } {
       EXIT_CODES.AUTH_EXPIRED,
     );
   }
-  return { endpoint: c.endpoint, token: c.token };
+  const override = program.opts().endpoint;
+  return { endpoint: override ?? c.endpoint, token: c.token };
 }
 
 const program = new Command();
