@@ -45,6 +45,7 @@ function compile(): void {
         "build",
         "src/cli.ts",
         "--compile",
+        "--minify",
         `--target=${t.target}`,
         `--outfile=${t.outfile}`,
       ],
