@@ -25,8 +25,8 @@ beforeEach(() => {
   posts = [];
   gets = [];
   getResponses = {
-    "https://admin.test/public/v1/home/recommendations": { items: [{ id: 101 }] },
-    "https://admin.test/public/v1/categories/9/products": { items: [{ id: 101 }] },
+    "https://admin.test/public/v1/home/recommendations": { items: [{ productId: 101 }] },
+    "https://admin.test/public/v1/categories/9/products": { items: [{ productId: 101 }] },
     "https://admin.test/public/v1/products/101/detail": { productStatus: "ON_SHELF", skus: [{ id: 201 }] },
   };
   backendResponse = {
