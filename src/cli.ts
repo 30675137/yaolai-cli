@@ -8,6 +8,8 @@ import { runWhoami } from "./commands/whoami.js";
 import { runGoodsList, runGoodsGet } from "./commands/goods.js";
 import { runOrdersList, runOrdersGet } from "./commands/orders.js";
 import { runPaymentsGet } from "./commands/payments.js";
+import { runImportCleanup } from "./commands/product/import-cleanup.js";
+import { runImportFromBase } from "./commands/product/import-from-base.js";
 import { runSkillsInstall } from "./commands/skills.js";
 import { registerVersion } from "./commands/version.js";
 import { registerConfig } from "./commands/config.js";
@@ -181,6 +183,58 @@ payments
         token,
         intentId,
         json: !!program.opts().json,
+      }),
+    );
+  });
+
+// product import
+const product = program.command("product").description("商品运营工具");
+product
+  .command("import-from-base")
+  .description("从飞书多维表格导入商品，默认 dry-run")
+  .requiredOption("--req <id>", "REQ-ID，例如 REQ-058")
+  .requiredOption("--base-url <url>", "飞书多维表格 URL")
+  .requiredOption("--mapping <path>", "字段映射 JSON 文件")
+  .option("--env <env>", "目标环境：test/prod", "test")
+  .option("--dry-run", "只预检不写入（默认）")
+  .option("--execute", "执行写入；默认只 dry-run")
+  .option("--output <dir>", "证据输出目录")
+  .option("--lark-cli <path>", "lark-cli 可执行文件路径")
+  .action(async (opts) => {
+    const { endpoint, token } = requireToken();
+    console.log(
+      await runImportFromBase({
+        endpoint,
+        token,
+        req: opts.req,
+        baseUrl: opts.baseUrl,
+        mappingPath: opts.mapping,
+        env: opts.env,
+        execute: !!opts.execute,
+        outputDir: opts.output,
+        larkCliPath: opts.larkCli,
+      }),
+    );
+  });
+product
+  .command("import-cleanup")
+  .description("清理指定商品导入批次的 test 数据")
+  .requiredOption("--req <id>", "REQ-ID，例如 REQ-058")
+  .requiredOption("--batch-id <id>", "导入批次 ID")
+  .option("--env <env>", "目标环境：test/prod", "test")
+  .option("--execute", "执行清理；默认只 dry-run")
+  .option("--output <dir>", "证据输出目录")
+  .action(async (opts) => {
+    const { endpoint, token } = requireToken();
+    console.log(
+      await runImportCleanup({
+        endpoint,
+        token,
+        req: opts.req,
+        batchId: opts.batchId,
+        env: opts.env,
+        execute: !!opts.execute,
+        outputDir: opts.output,
       }),
     );
   });
