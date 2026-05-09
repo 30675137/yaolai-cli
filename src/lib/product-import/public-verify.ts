@@ -32,5 +32,8 @@ export async function verifyPublicVisibility(options: PublicVerifyOptions): Prom
 
 function containsProduct(payload: any, spuId: number): boolean {
   const items = Array.isArray(payload?.items) ? payload.items : [];
-  return items.some((item: any) => Number(item.productId ?? item.id ?? item.spuId) === spuId);
+  return items.some((item: any) => {
+    const product = item.product ?? item;
+    return Number(product.productId ?? product.id ?? product.spuId) === spuId;
+  });
 }
